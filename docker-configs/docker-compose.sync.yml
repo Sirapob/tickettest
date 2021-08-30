@@ -1,0 +1,45 @@
+version: "3"
+services:
+  api:
+    build: ../api
+    volumes:
+      - apicode-unison-sync:/app:nocopy
+    environment:
+      PORT: 8000
+      URL_CONNECT_DATABASE: mysql_db
+      PORT_CONNECT_DATABASE: 3306
+    ports:
+      - "8000:8000"
+    entrypoint:
+      - sh
+      - /app/docker-entrypoint.sh
+  ui:
+    build: ../ui
+    volumes:
+      - uicode-unison-sync:/app:nocopy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_PATH: "src"
+      REACT_APP_API_ENDPOINT: "http://127.0.0.1:8000"
+      REACT_APP_API_VERSION: "api/v1"
+    entrypoint:
+      - sh
+      - /app/docker-entrypoint.sh
+  db:
+    build: ../db
+    container_name: mysql_db
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_USER=user
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_PASSWORD=userpassword
+      - MYSQL_DATABASE=docker
+      - URL_CONNECT_DATABASE=mysql_db
+      - PORT_CONNECT_DATABASE=3306
+volumes:
+  apicode-unison-sync:
+    external: true
+  uicode-unison-sync:
+    external: true
