@@ -1,7 +1,7 @@
 version: "3"
 services:
   api:
-    build: ../api
+    build: ../apis
     volumes:
       - apicode-unison-sync:/app:nocopy
     environment:
